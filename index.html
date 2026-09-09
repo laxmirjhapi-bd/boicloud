@@ -120,25 +120,56 @@
   .loading-msg{text-align:center; padding:60px; color:var(--ink-soft); font-family:'JetBrains Mono', monospace; font-size:0.85rem;}
   .shared-note{font-size:0.75rem; color:var(--ink-soft); text-align:center; margin-top:34px; line-height:1.6;}
 
-  .side-fab{
-    position:fixed; left:16px; top:50%; transform:translateY(-50%) translateY(0);
-    background:#FFF9EC; border:4px solid #111111; border-radius:14px;
-    padding:10px 20px; cursor:pointer; z-index:40;
-    box-shadow: 0 6px 0 #111111, 0 10px 16px rgba(0,0,0,0.35);
-    transition: transform .1s ease, box-shadow .1s ease;
+  /* ---- Series quick-filter pill buttons (glassy shimmer style) ---- */
+  .series-rail{
+    position:fixed; left:14px; top:50%; transform:translateY(-50%);
+    display:flex; flex-direction:column; gap:10px; z-index:40;
   }
-  .side-fab .label{
-    font-family:'Bangers', cursive; font-size:1.5rem; letter-spacing:1px;
-    color:#1D4ED8; -webkit-text-stroke:0.6px #0B1F6B;
+  .pill-btn{
+    position:relative; overflow:hidden;
+    display:flex; align-items:center; gap:8px;
+    background:linear-gradient(180deg, #ffffff 0%, #eef0f2 100%);
+    border:1px solid rgba(255,255,255,0.9);
+    border-radius:999px;
+    padding:9px 16px 9px 12px;
+    cursor:pointer;
+    box-shadow:
+      0 3px 8px rgba(20,15,10,0.22),
+      inset 0 1px 0 rgba(255,255,255,0.95),
+      inset 0 -3px 5px rgba(0,0,0,0.08);
+    transition: transform .12s ease, box-shadow .12s ease;
   }
-  .side-fab:hover{ transform:translateY(-50%) translateY(-2px); }
-  .side-fab:active{
-    transform:translateY(-50%) translateY(4px);
-    box-shadow: 0 2px 0 #111111, 0 4px 8px rgba(0,0,0,0.3);
+  .pill-btn:hover{ transform:translateX(3px); }
+  .pill-btn:active{ transform:translateX(1px) scale(0.98); }
+  .pill-btn .pico{ width:18px; height:18px; flex-shrink:0; color:#5B4E3D; }
+  .pill-btn .plabel{
+    font-family:'Hind Siliguri', sans-serif; font-weight:600; font-size:0.85rem;
+    color:#241C15; white-space:nowrap;
+  }
+  .pill-btn::after{
+    content:''; position:absolute; left:-40%; bottom:-3px;
+    width:45%; height:5px;
+    background:linear-gradient(90deg, transparent, #ff6b6b, #ffe66d, #4dd6ff, transparent);
+    filter:blur(2px); opacity:0.85; pointer-events:none;
+    animation: pillShimmer 3.2s linear infinite;
+  }
+  .pill-btn:nth-child(2)::after{ animation-delay:0.4s; }
+  .pill-btn:nth-child(3)::after{ animation-delay:0.8s; }
+  .pill-btn:nth-child(4)::after{ animation-delay:1.2s; }
+  .pill-btn:nth-child(5)::after{ animation-delay:1.6s; }
+  .pill-btn:nth-child(6)::after{ animation-delay:2.0s; }
+  @keyframes pillShimmer{
+    0%{ left:-45%; }
+    100%{ left:110%; }
   }
 
-  @media (max-width:560px){.form-grid{grid-template-columns:1fr;} .wordmark{font-size:1.6rem;}
-    .side-fab{left:8px; padding:7px 12px;} .side-fab .label{font-size:1.05rem;}}
+  @media (max-width:700px){
+    .series-rail{ left:6px; gap:7px; }
+    .pill-btn{ padding:7px 12px 7px 9px; }
+    .pill-btn .plabel{ font-size:0.72rem; }
+    .pill-btn .pico{ width:15px; height:15px; }
+  }
+  @media (max-width:560px){.form-grid{grid-template-columns:1fr;} .wordmark{font-size:1.6rem;}}
 </style>
 </head>
 <body>
@@ -167,7 +198,32 @@
   <p class="shared-note" id="footNote"></p>
 </main>
 
-<button id="masudRanaBtn" class="side-fab" title="মাসুদ রানার সব বই দেখুন"><span class="label">MASUD RANA</span></button>
+<div class="series-rail" id="seriesRail">
+  <button class="pill-btn" data-series="আনোয়ার হোসেন">
+    <svg class="pico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+    <span class="plabel">মাসুদ রানা</span>
+  </button>
+  <button class="pill-btn" data-series="ফেলুদা">
+    <svg class="pico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+    <span class="plabel">ফেলুদা সমগ্র</span>
+  </button>
+  <button class="pill-btn" data-series="ব্যোমকেশ">
+    <svg class="pico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+    <span class="plabel">ব্যোমকেশ সমগ্র</span>
+  </button>
+  <button class="pill-btn" data-series="কিরীটি">
+    <svg class="pico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+    <span class="plabel">কিরীটি সমগ্র</span>
+  </button>
+  <button class="pill-btn" data-series="জুল ভার">
+    <svg class="pico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+    <span class="plabel">জুল ভার্ণ সমগ্র</span>
+  </button>
+  <button class="pill-btn" data-series="হোমস">
+    <svg class="pico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+    <span class="plabel">শার্লক হোমস সমগ্র</span>
+  </button>
+</div>
 
 <div id="modalZone"></div>
 
@@ -539,11 +595,13 @@ const CONFIG = {
 
   document.getElementById('searchInput').addEventListener('input', renderGrid);
 
-  document.getElementById('masudRanaBtn').addEventListener('click', ()=>{
-    const input = document.getElementById('searchInput');
-    input.value = 'আনোয়ার হোসেন';
-    renderGrid();
-    window.scrollTo({top:0, behavior:'smooth'});
+  document.querySelectorAll('#seriesRail .pill-btn').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const input = document.getElementById('searchInput');
+      input.value = btn.dataset.series;
+      renderGrid();
+      window.scrollTo({top:0, behavior:'smooth'});
+    });
   });
 
   loadBooksPublic();
