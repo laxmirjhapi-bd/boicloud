@@ -10,6 +10,8 @@
 <meta property="og:description" content="সবার জন্য উন্মুক্ত বাংলা বইয়ের ডিজিটাল সংগ্রহশালা — বিনামূল্যে পড়ুন।">
 <meta property="og:type" content="website">
 <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://raw.githubusercontent.com">
+<link rel="preconnect" href="https://api.countapi.xyz">
 <link href="https://fonts.googleapis.com/css2?family=Tiro+Bangla&family=Hind+Siliguri:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Bangers&display=swap" rel="stylesheet">
 <style>
   :root{
@@ -164,9 +166,9 @@
     100%{ left:110%; }
   }
 
-  /* ডেস্কটপে বাটনের জন্য জায়গা reserve করা হচ্ছে, যাতে মূল কনটেন্টের সাথে overlap না হয় */
+  /* ডেস্কটপে বাটনের জন্য জায়গা reserve করা হচ্ছে — শুধু main এ, header পুরো প্রস্থ জুড়ে থাকবে */
   @media (min-width:951px){
-    body{ padding-left:224px; }
+    main{ padding-left:248px; }
   }
 
   /* ট্যাবলেট/মাঝারি স্ক্রিনে সাইডবার বাটন হালকা করে রাখা */
@@ -175,12 +177,11 @@
     .pill-btn{ padding:7px 12px 7px 9px; }
     .pill-btn .plabel{ font-size:0.75rem; }
     .pill-btn .pico{ width:15px; height:15px; }
-    body{ padding-left:190px; }
+    main{ padding-left:214px; }
   }
 
   /* মোবাইলে সাইডবার পুরোপুরি বদলে horizontal scroll strip হয়ে যাবে */
   @media (max-width:700px){
-    body{ padding-left:0; }
     .series-rail{
       position:static; transform:none; width:100%;
       flex-direction:row; overflow-x:auto; -webkit-overflow-scrolling:touch;
@@ -246,7 +247,6 @@
     <span class="count-tag" id="countTag"></span>
   </div>
   <div id="gridZone"><div class="loading-msg">সংগ্রহশালা লোড হচ্ছে...</div></div>
-  <p class="shared-note" id="footNote"></p>
 </main>
 
 <div id="modalZone"></div>
@@ -285,11 +285,6 @@ const CONFIG = {
     document.getElementById('libToggleBtn').style.display = 'inline-block';
   }
 
-  document.getElementById('footNote').textContent =
-    isConfigured
-      ? `এই লাইব্রেরির তথ্য GitHub রিপোজিটরি ${CONFIG.owner}/${CONFIG.repo} -এ সংরক্ষিত থাকে — নতুন বই যোগ হলে সবার জন্য দৃশ্যমান হতে ১-৫ মিনিট সময় লাগতে পারে (CDN ক্যাশের কারণে)।`
-      : 'কনফিগারেশন সম্পন্ন হয়নি — নিচের নির্দেশনা অনুসরণ করুন।';
-
   const coverColors = ['#21402F','#8B3A2B','#AD8236','#2E4A6B','#5B3A5C'];
   function colorFor(str){ let h=0; for(let i=0;i<str.length;i++) h=str.charCodeAt(i)+((h<<5)-h); return coverColors[Math.abs(h)%coverColors.length]; }
   function escapeHtml(s){ return (s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
@@ -297,12 +292,16 @@ const CONFIG = {
   function b64DecodeUnicode(str){ return decodeURIComponent(escape(atob(str))); }
 
   // ---------- View counter (public, no login needed) ----------
+  const viewCountCache = {}; // একবার আনা হলে আর বারবার নেটওয়ার্ক রিকোয়েস্ট পাঠাবে না
+
   async function getViewCount(bookId){
+    if(viewCountCache[bookId] !== undefined) return viewCountCache[bookId];
     try{
       const res = await fetch(`https://api.countapi.xyz/get/${COUNTER_NAMESPACE}/${bookId}`);
-      if(!res.ok) return 0;
+      if(!res.ok){ viewCountCache[bookId] = 0; return 0; }
       const data = await res.json();
-      return data.value || 0;
+      viewCountCache[bookId] = data.value || 0;
+      return viewCountCache[bookId];
     }catch(e){ return 0; }
   }
 
@@ -311,6 +310,7 @@ const CONFIG = {
       const res = await fetch(`https://api.countapi.xyz/hit/${COUNTER_NAMESPACE}/${bookId}`);
       if(!res.ok) return null;
       const data = await res.json();
+      viewCountCache[bookId] = data.value; // ক্যাশ আপডেট, পরের বার কার্ডে সাথে সাথে নতুন সংখ্যা দেখাবে
       return data.value;
     }catch(e){ return null; }
   }
