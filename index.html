@@ -124,6 +124,7 @@
   .series-rail{
     position:fixed; left:14px; top:50%; transform:translateY(-50%);
     display:flex; flex-direction:column; gap:10px; z-index:40;
+    width:200px;
   }
   .pill-btn{
     position:relative; overflow:hidden;
@@ -163,9 +164,32 @@
     100%{ left:110%; }
   }
 
-  @media (max-width:700px){
-    .series-rail{ left:6px; gap:7px; }
+  /* ডেস্কটপে বাটনের জন্য জায়গা reserve করা হচ্ছে, যাতে মূল কনটেন্টের সাথে overlap না হয় */
+  @media (min-width:951px){
+    body{ padding-left:224px; }
+  }
+
+  /* ট্যাবলেট/মাঝারি স্ক্রিনে সাইডবার বাটন হালকা করে রাখা */
+  @media (max-width:950px) and (min-width:701px){
+    .series-rail{ width:170px; left:8px; gap:8px; }
     .pill-btn{ padding:7px 12px 7px 9px; }
+    .pill-btn .plabel{ font-size:0.75rem; }
+    .pill-btn .pico{ width:15px; height:15px; }
+    body{ padding-left:190px; }
+  }
+
+  /* মোবাইলে সাইডবার পুরোপুরি বদলে horizontal scroll strip হয়ে যাবে */
+  @media (max-width:700px){
+    body{ padding-left:0; }
+    .series-rail{
+      position:static; transform:none; width:100%;
+      flex-direction:row; overflow-x:auto; -webkit-overflow-scrolling:touch;
+      gap:8px; padding:12px 12px; box-sizing:border-box;
+      background:var(--forest-dark);
+    }
+    .series-rail::-webkit-scrollbar{ height:4px; }
+    .series-rail::-webkit-scrollbar-thumb{ background:var(--brass); border-radius:4px; }
+    .pill-btn{ flex-shrink:0; padding:7px 12px 7px 9px; }
     .pill-btn .plabel{ font-size:0.72rem; }
     .pill-btn .pico{ width:15px; height:15px; }
   }
@@ -187,16 +211,6 @@
     <button class="lib-toggle" id="libToggleBtn" style="display:none;">ADMIN</button>
   </div>
 </header>
-
-<main>
-  <div id="adminZone"></div>
-  <div class="search-row">
-    <input type="text" id="searchInput" placeholder="বইয়ের নাম বা লেখকের নাম দিয়ে খুঁজুন...">
-    <span class="count-tag" id="countTag"></span>
-  </div>
-  <div id="gridZone"><div class="loading-msg">সংগ্রহশালা লোড হচ্ছে...</div></div>
-  <p class="shared-note" id="footNote"></p>
-</main>
 
 <div class="series-rail" id="seriesRail">
   <button class="pill-btn" data-series="আনোয়ার হোসেন">
@@ -224,6 +238,16 @@
     <span class="plabel">শার্লক হোমস সমগ্র</span>
   </button>
 </div>
+
+<main>
+  <div id="adminZone"></div>
+  <div class="search-row">
+    <input type="text" id="searchInput" placeholder="বইয়ের নাম বা লেখকের নাম দিয়ে খুঁজুন...">
+    <span class="count-tag" id="countTag"></span>
+  </div>
+  <div id="gridZone"><div class="loading-msg">সংগ্রহশালা লোড হচ্ছে...</div></div>
+  <p class="shared-note" id="footNote"></p>
+</main>
 
 <div id="modalZone"></div>
 
