@@ -408,8 +408,18 @@ const CONFIG = {
   function openViewer(id){
     const book = books.find(b=>b.id===id);
     if(!book) return;
-    const zone = document.getElementById('modalZone');
     const hasPdf = !!book.pdfSrc;
+    const isMobile = window.matchMedia('(max-width:700px)').matches;
+
+    // মোবাইলে iframe এ embed করে PDF দেখানো অনেক ব্রাউজারে (বিশেষত Android Chrome) কাজ করে না —
+    // তাই মোবাইলে সরাসরি নতুন ট্যাবে PDF খোলা হয়, যেটা নির্ভরযোগ্যভাবে দ্রুত কাজ করে।
+    if(hasPdf && isMobile){
+      window.open(book.pdfSrc, '_blank');
+      hitViewCount(book.id);
+      return;
+    }
+
+    const zone = document.getElementById('modalZone');
     // toolbar=0 ও navpanes=0 ব্রাউজারের নিজস্ব PDF ভিউয়ারের ডাউনলোড/প্রিন্ট আইকন যতটা সম্ভব লুকিয়ে রাখে
     const pdfSrcNoToolbar = hasPdf ? escapeHtml(book.pdfSrc) + '#toolbar=0&navpanes=0&scrollbar=1' : '';
     zone.innerHTML = `<div class="overlay" id="overlayEl"><div class="viewer">
