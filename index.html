@@ -413,10 +413,11 @@ const CONFIG = {
     const isMobile = window.matchMedia('(max-width:700px)').matches;
 
     // মোবাইলে iframe এ embed করে PDF দেখানো অনেক ব্রাউজারে (বিশেষত Android Chrome) কাজ করে না —
-    // তাই মোবাইলে সরাসরি নতুন ট্যাবে PDF খোলা হয়, যেটা নির্ভরযোগ্যভাবে দ্রুত কাজ করে।
+    // তাই মোবাইলে একই ট্যাবেই PDF-এ নিয়ে যাওয়া হয় (নতুন ট্যাব না), এতে ব্রাউজারের Back বাটনে
+    // চাপলে স্বাভাবিকভাবেই আবার BoiCloud-এ ফিরে আসা যায়।
     if(hasPdf && isMobile){
-      window.open(book.pdfSrc, '_blank');
       hitViewCount(book.id);
+      window.location.href = book.pdfSrc;
       return;
     }
 
